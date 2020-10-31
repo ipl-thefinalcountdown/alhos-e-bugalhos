@@ -1,0 +1,13 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v3.3.0
+  hooks:
+  - id: check-merge-conflict
+  - id: check-yaml
+  - id: check-xml
+  - id: end-of-file-fixer
+  - id: trailing-whitespace
+- repo: https://github.com/KuriharaJun/pre-commit-hooks-dotnet-core
+  rev: v0.3
+  hooks:
+  - id: dotnet-format
