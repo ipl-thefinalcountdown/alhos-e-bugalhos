@@ -1,0 +1,29 @@
+name: check
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Setup python for pre-commit
+        uses: actions/setup-python@v2
+
+      - name: Setup dotnet for dotnet-install
+        uses: actions/setup-dotnet@v1
+
+      - name: Install dotnet-format
+        run: |
+          dotnet tool install --global dotnet-format
+          export PATH="$PATH":~/.dotnet/tools
+
+      - name: Run pre-commit
+        uses: pre-commit/action@v2.0.0
