@@ -3,3 +3,4 @@
 <h3 align="center">É tudo a mesma coisa!</h3>
 
 ![build](https://github.com/ipl-thefinalcountdown/alhos-e-bugalhos/workflows/build/badge.svg)
+![check](https://github.com/ipl-thefinalcountdown/alhos-e-bugalhos/workflows/check/badge.svg)
