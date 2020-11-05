@@ -4,6 +4,8 @@ VisualStudioVersion = 15.0.26730.10
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlhosEBugalhos", "AlhosEBugalhos\AlhosEBugalhos.csproj", "{CA6FB0A3-E2AD-4C3B-AE8D-3BC92CDF8D8D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlhosEBugalhos.Tests", "AlhosEBugalhos.Tests\AlhosEBugalhos.Tests.csproj", "{333680EB-54CE-45EF-9384-CC9E7A5B008E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,5 +28,17 @@ Global
 		{CA6FB0A3-E2AD-4C3B-AE8D-3BC92CDF8D8D}.Release|x64.Build.0 = Release|Any CPU
 		{CA6FB0A3-E2AD-4C3B-AE8D-3BC92CDF8D8D}.Release|x86.ActiveCfg = Release|Any CPU
 		{CA6FB0A3-E2AD-4C3B-AE8D-3BC92CDF8D8D}.Release|x86.Build.0 = Release|Any CPU
+		{333680EB-54CE-45EF-9384-CC9E7A5B008E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{333680EB-54CE-45EF-9384-CC9E7A5B008E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{333680EB-54CE-45EF-9384-CC9E7A5B008E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{333680EB-54CE-45EF-9384-CC9E7A5B008E}.Debug|x64.Build.0 = Debug|Any CPU
+		{333680EB-54CE-45EF-9384-CC9E7A5B008E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{333680EB-54CE-45EF-9384-CC9E7A5B008E}.Debug|x86.Build.0 = Debug|Any CPU
+		{333680EB-54CE-45EF-9384-CC9E7A5B008E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{333680EB-54CE-45EF-9384-CC9E7A5B008E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{333680EB-54CE-45EF-9384-CC9E7A5B008E}.Release|x64.ActiveCfg = Release|Any CPU
+		{333680EB-54CE-45EF-9384-CC9E7A5B008E}.Release|x64.Build.0 = Release|Any CPU
+		{333680EB-54CE-45EF-9384-CC9E7A5B008E}.Release|x86.ActiveCfg = Release|Any CPU
+		{333680EB-54CE-45EF-9384-CC9E7A5B008E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
