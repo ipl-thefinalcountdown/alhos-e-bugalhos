@@ -32,4 +32,9 @@ jobs:
         run: dotnet build
 
       - name: Test
-        run: dotnet test
+        run: dotnet test --collect:"Code Coverage"
+
+      - name: Run codacy-coverage-reporter
+        uses: codacy/codacy-coverage-reporter-action@v0.2.1
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
