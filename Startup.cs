@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace alhos_e_bugalhos
+namespace AlhosEBugalhos
 {
     public class Startup
     {

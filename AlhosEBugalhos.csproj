@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>alhos_e_bugalhos</RootNamespace>
+    <RootNamespace>AlhosEBugalhos</RootNamespace>
   </PropertyGroup>
 
 </Project>

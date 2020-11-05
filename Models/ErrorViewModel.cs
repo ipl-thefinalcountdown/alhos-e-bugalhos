@@ -1,6 +1,6 @@
 using System;
 
-namespace alhos_e_bugalhos.Models
+namespace AlhosEBugalhos.Models
 {
     public class ErrorViewModel
     {

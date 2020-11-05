@@ -5,9 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using alhos_e_bugalhos.Models;
+using AlhosEBugalhos.Models;
 
-namespace alhos_e_bugalhos.Controllers
+namespace AlhosEBugalhos.Controllers
 {
     public class HomeController : Controller
     {
