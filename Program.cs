@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace alhos_e_bugalhos
+namespace AlhosEBugalhos
 {
     public class Program
     {
