@@ -1,0 +1,51 @@
+<%inherit file="base.html"/>
+
+<div class="row align-items-center">
+  <div class="col-sm">
+    <div class="card">
+      <div class="card-header">Input</div>
+      <div class="card-body">
+        <p class="card-text">TODO: form</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-auto">
+    <i class="fas fa-arrow-right"></i>
+  </div>
+  <div class="col-sm">
+    <div class="card">
+      <div class="card-header">Output</div>
+      <div class="card-body">
+        <p class="card-text">TODO: form</p>
+      </div>
+    </div>
+  </div>
+</div>
+<br/>
+
+<div class="row">
+  <h1>Connections</h1>
+</div>
+<br/>
+
+<div class="row">
+% for connection in connections:
+  <div class="col-sm-4 mb-3">
+    <div class="card">
+      <div class="card-header">${connection.name}</div>
+      <div class="card-body">
+        <h5 class="card-title">Input</h5>
+        <p class="card-text"><b>Type:</b> ${connection.input.type_name}</p>
+      % for name, value in connection.input.settings.items():
+        <p class="card-text"><b>${name}:</b> ${value}</p>
+      % endfor
+        <h5 class="card-title">Output</h5>
+      <p class="card-text"><b>Type:</b> ${connection.output.type_name}</p>
+      % for name, value in connection.output.settings.items():
+        <p class="card-text"><b>${name}:</b> ${value}</p>
+      % endfor
+      </div>
+    </div>
+  </div>
+% endfor
+</div>
