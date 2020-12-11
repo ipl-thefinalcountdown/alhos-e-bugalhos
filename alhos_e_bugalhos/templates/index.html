@@ -41,7 +41,18 @@
 % for connection in connections:
   <div class="col-sm-4 mb-3">
     <div class="card">
-      <div class="card-header">${connection.name}</div>
+      <div class="card-header">
+        <div class="row align-items-center">
+          <div class="col">
+            ${connection.name}
+          </div>
+          <div class="col-xs">
+            <button type="button" class="btn btn-outline-secondary mt-0 mb-0 ml-1 pt-1 pb-1 pl-2 pr-2 float-right">
+              <i class="fas fa-edit text-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
       <div class="card-body">
         <h5 class="card-title">Input</h5>
         <p class="card-text"><b>Type:</b> ${connection.input.type_name}</p>
