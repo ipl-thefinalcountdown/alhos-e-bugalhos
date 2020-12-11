@@ -1,0 +1,72 @@
+<%inherit file="base.html"/>
+
+<%def name="update_form(target)">
+  <%
+    provider = getattr(connection, target)
+  %>
+  <div class="card">
+    <div class="card-header">${target.capitalize()}</div>
+    <div class="card-body">
+      <div class="row g-3 align-items-center">
+        <div class="col-auto">
+          <label class="card-text col-form-label"><b>Type</b></label>
+        </div>
+        <div class="col-auto">
+          <label class="card-text col-form-label">${provider.TYPE_NAME}</label>
+        </div>
+      </div>
+      <br/>
+    % for name, value in provider.settings.items():
+      <%
+        id = '-'.join((target, name))
+      %>
+      <div class="row g-3 align-items-center">
+        <div class="col-auto">
+          <label class="card-text col-form-label" for="${id}" ><b>${name}</b></label>
+        </div>
+        <div class="col-auto">
+        % if validate:
+          % if errors[target][name]:
+            <input id="${id}" name="${id}" class="form-control is-invalid" value="${form[id]}">
+            <div class="invalid-feedback">
+              ${'. '.join(errors[target][name])}
+            </div>
+          % else:
+            <input id="${id}" name="${id}" class="form-control is-valid" value="${value}">
+          % endif
+        % else:
+          <input id="${id}" name="${id}" class="form-control" value="${value}">
+        % endif
+        </div>
+      </div>
+      <br/>
+    % endfor
+    </div>
+  </div>
+</%def>
+
+<h1>Editing ${connection.name}</h1>
+<br/>
+
+<form method="POST">
+  <div class="row align-items-center">
+    <div class="col-sm">
+      ${update_form('input')}
+    </div>
+    <div class="col-auto">
+      <i class="fas fa-arrow-right"></i>
+    </div>
+    <div class="col-sm">
+      ${update_form('output')}
+    </div>
+  </div>
+
+  <br/>
+
+  <div class="row">
+    <div class="col">
+      <button type="submit" class="btn btn-primary float-right">Submit</button>
+    </div>
+  </div>
+
+</form>

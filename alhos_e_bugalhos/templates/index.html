@@ -38,7 +38,7 @@
 <br/>
 
 <div class="row">
-% for connection in connections:
+% for id, connection in enumerate(connections):
   <div class="col-sm-4 mb-3">
     <div class="card">
       <div class="card-header">
@@ -47,9 +47,9 @@
             ${connection.name}
           </div>
           <div class="col-xs">
-            <button type="button" class="btn btn-outline-secondary mt-0 mb-0 ml-1 pt-1 pb-1 pl-2 pr-2 float-right">
+            <a type="button" class="btn btn-outline-secondary mt-0 mb-0 ml-1 pt-1 pb-1 pl-2 pr-2 float-right" href="edit/${id}">
               <i class="fas fa-edit text-right"></i>
-            </button>
+            </a>
           </div>
         </div>
       </div>
