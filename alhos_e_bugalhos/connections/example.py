@@ -1,3 +1,5 @@
+import validators
+
 import alhos_e_bugalhos.connections
 
 
@@ -21,6 +23,18 @@ class ExampleBackend(alhos_e_bugalhos.connections.Backend):
             'Port': self._port,
         }
 
+    def update_setting(self, name: str, value: str):
+        print(name, name == 'Host')
+        if name == 'Host':
+            self._host = value
+        elif name == 'Port':
+            try:
+                self._port = int(value)
+            except ValueError:
+                raise alhos_e_bugalhos.connections.SettingError('Invalid Port')
+        else:
+            raise KeyError(f'Invalid setting: {name}')
+
 
 class ExampleFrontend(alhos_e_bugalhos.connections.Frontend):
     '''
@@ -39,3 +53,11 @@ class ExampleFrontend(alhos_e_bugalhos.connections.Frontend):
         return {
             'URL': self._url,
         }
+
+    def update_setting(self, name: str, value: str):
+        if name == 'URL':
+            if not validators.url(value):
+                raise alhos_e_bugalhos.connections.SettingError('Invalid URL')
+            self._url = value
+        else:
+            raise KeyError(f'Invalid setting: {name}')
