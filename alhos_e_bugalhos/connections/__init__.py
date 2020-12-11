@@ -6,6 +6,10 @@ from typing import Dict, Union
 SettingsDict = Dict[str, Union[str, int]]
 
 
+class SettingError(Exception):
+    pass
+
+
 class Provider(abc.ABC):
     @property
     @abc.abstractmethod
@@ -15,6 +19,10 @@ class Provider(abc.ABC):
     @property
     @abc.abstractmethod
     def settings(self) -> SettingsDict:
+        pass
+
+    @abc.abstractmethod
+    def update_setting(self, name: str, value: str) -> SettingsDict:
         pass
 
 
