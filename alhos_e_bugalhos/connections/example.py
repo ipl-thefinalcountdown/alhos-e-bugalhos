@@ -1,3 +1,5 @@
+from typing import Any
+
 import validators
 
 import alhos_e_bugalhos.connections
@@ -7,57 +9,34 @@ class ExampleBackend(alhos_e_bugalhos.connections.Backend):
     '''
     Example backend object
     '''
+    TYPE_NAME = 'Example Backend'
+    SETTINGS = [
+        'Host',
+        'Port',
+    ]
 
-    def __init__(self, host: str, port: int) -> None:
-        self._host = host
-        self._port = port
-
-    @property
-    def type_name(self) -> str:
-        return 'Example Backend'
-
-    @property
-    def settings(self) -> alhos_e_bugalhos.connections.SettingsDict:
-        return {
-            'Host': self._host,
-            'Port': self._port,
-        }
-
-    def update_setting(self, name: str, value: str):
-        print(name, name == 'Host')
+    def validate_setting(self, name: str, value: Any):
         if name == 'Host':
-            self._host = value
+            return str(value)
         elif name == 'Port':
             try:
-                self._port = int(value)
+                return int(value)
             except ValueError:
                 raise alhos_e_bugalhos.connections.SettingError('Invalid Port')
-        else:
-            raise KeyError(f'Invalid setting: {name}')
 
 
 class ExampleFrontend(alhos_e_bugalhos.connections.Frontend):
     '''
     Example front object
     '''
+    TYPE_NAME = 'Example Frontend'
+    SETTINGS = [
+        'URL',
+    ]
 
-    def __init__(self, url: str) -> None:
-        self._url = url
-
-    @property
-    def type_name(self) -> str:
-        return 'Example Frontend'
-
-    @property
-    def settings(self) -> alhos_e_bugalhos.connections.SettingsDict:
-        return {
-            'URL': self._url,
-        }
-
-    def update_setting(self, name: str, value: str):
+    def validate_setting(self, name: str, value: Any):
         if name == 'URL':
+            value = str(value)
             if not validators.url(value):
                 raise alhos_e_bugalhos.connections.SettingError('Invalid URL')
-            self._url = value
-        else:
-            raise KeyError(f'Invalid setting: {name}')
+            return value
