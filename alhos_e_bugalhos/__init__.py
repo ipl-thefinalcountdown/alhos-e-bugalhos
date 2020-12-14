@@ -3,6 +3,7 @@ alhos_e_bugalhos
 '''
 
 import collections
+import functools
 import os.path
 
 import fastapi
@@ -112,15 +113,32 @@ active_connections = [
 ]
 
 
+def template(name):
+    def decorator(func):
+        @functools.wraps(func)
+        async def wrapper(*args, **kwargs):
+            render_params = await func(*args, **kwargs)
+            try:
+                return templates.get_template(
+                    f'{name}.html'
+                ).render(**render_params)
+            except Exception:
+                return mako.exceptions.html_error_template().render()
+        return wrapper
+    return decorator
+
+
 @app.get('/', response_class=HTMLResponse)
+@template('index')
 async def root():
-    return templates.get_template('index.html').render(
-        connections=active_connections,
-        available_settings=available_settings,
-    )
+    return {
+        'connections': active_connections,
+        'available_settings': available_settings,
+    }
 
 
 @app.post('/', response_class=HTMLResponse)
+@template('index')
 async def add_form(request: fastapi.Request):  # noqa: C901
     validate = True
     connection_name = None
@@ -182,25 +200,27 @@ async def add_form(request: fastapi.Request):  # noqa: C901
         ))
         validate = False
 
-    return templates.get_template('index.html').render(
-        connections=active_connections,
-        available_settings=available_settings,
-        validate=validate,
-        single_error=single_error,
-        errors=errors,
-        form=await request.form(),
-    )
+    return {
+        'connections': active_connections,
+        'available_settings': available_settings,
+        'validate': validate,
+        'single_error': single_error,
+        'errors': errors,
+        'form': await request.form(),
+    }
 
 
 @app.get('/edit/{id}', response_class=HTMLResponse)
+@template('edit')
 async def edit(id: int):
     # TODO: handle invalid ID
-    return templates.get_template('edit.html').render(
-        connection=active_connections[id],
-    )
+    return {
+        'connection': active_connections[id],
+    }
 
 
 @app.post('/edit/{id}', response_class=HTMLResponse)
+@template('edit')
 async def edit_form(id: int, request: fastapi.Request):
     # target, name, error string
     errors = {
@@ -216,9 +236,9 @@ async def edit_form(id: int, request: fastapi.Request):
             # TODO: customize the exception
             errors[target][name].append(e.args[0])
 
-    return templates.get_template('edit.html').render(
-        connection=active_connections[id],
-        validate=True,
-        errors=errors,
-        form=await request.form(),
-    )
+    return {
+        'connection': active_connections[id],
+        'validate': True,
+        'errors': errors,
+        'form': await request.form(),
+    }
