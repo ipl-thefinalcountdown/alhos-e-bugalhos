@@ -118,6 +118,13 @@
 <br/>
 
 <div class="row">
+% if not connections:
+  <div class="col">
+    <div class="alert alert-info" role="alert">
+      No active connections!
+    </div>
+  </div>
+% endif
 % for id, connection in enumerate(connections):
   <div class="col-sm-4 mb-3">
     <div class="card">
