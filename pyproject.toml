@@ -21,4 +21,5 @@ requires = [
 test = [
     'pytest',
     'pytest-cov',
+    'beautifulsoup4',
 ]
