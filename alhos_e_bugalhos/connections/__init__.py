@@ -15,6 +15,16 @@ class SettingError(ProviderError):
     pass
 
 
+class MultipleSettingError(ProviderError):
+    def __init__(self, errors: Dict[str, str]):
+        super().__init__(f'Invalid settings: {", ".join(errors)}')
+        self._errors = errors
+
+    @property
+    def errors(self) -> Dict[str, str]:
+        return self._errors  # setting name, error description
+
+
 class Provider(abc.ABC):
     TYPE_NAME: ClassVar[Optional[str]]
     SETTINGS: ClassVar[Optional[List[str]]] = None
@@ -36,10 +46,17 @@ class Provider(abc.ABC):
 
         self._settings = {}
 
+        errors = {}
         for name, value in settings.items():
             if name not in self.SETTINGS:
                 raise SettingError(f'Unknown setting: {name}')
-            self.update_setting(name, value)
+            try:
+                self.update_setting(name, value)
+            except SettingError as e:
+                errors[name] = e.args[0]
+
+        if errors:
+            raise MultipleSettingError(errors)
 
     def update_setting(self, name: str, value: Any):
         if name not in self.SETTINGS:
