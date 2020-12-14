@@ -1,34 +1,114 @@
 <%inherit file="base.html"/>
 
-<div class="row align-items-center">
-  <div class="col-sm">
-    <div class="card">
-      <div class="card-header">Input</div>
-      <div class="card-body">
-        <p class="card-text">TODO: form</p>
+<%def name="add_form(target)">
+  <div class="card">
+    <div class="card-header">${target.capitalize()}</div>
+    <div class="card-body">
+
+      <div class="row g-3 align-items-center">
+        <div class="col-auto">
+          <label class="card-text col-form-label"><b>Type</b></label>
+        </div>
+        <div class="col-auto">
+        <%
+        invalid = validate and 'select' in errors[target]
+        valid_class = 'is-invalid' if invalid else ''
+        %>
+          <select class="form-select ${valid_class}" id="select-${target}" name="select-${target}" aria-label="Select ${target} provider">
+            <option value='' ${'selected' if not validate else ''}>Choose type...</option>
+          % for provider in available_settings[target]:
+            <%
+              selected = 'selected' if form and form[f'select-{target}'] == provider else ''
+            %>
+            <option value="${provider}" ${selected}>${provider}</option>
+          % endfor
+          </select>
+        % if invalid:
+          <div class="invalid-feedback">
+            ${errors[target]['select']}
+          </div>
+        % endif
+        </div>
+      </div>
+      <br/>
+
+  % for provider, settings in available_settings[target].items():
+    <div id="${target}-${provider.replace(' ', '-')}" class="select-${target}" style="display: none">
+    % for name in settings:
+      <%
+        id = '-'.join((target, provider, name))
+      %>
+      <div class="row g-3 align-items-center">
+        <div class="col-auto">
+          <label class="card-text col-form-label" for="${id}" ><b>${name}</b></label>
+        </div>
+        <div class="col-auto">
+        % if validate:
+          % if name in errors[target]:
+            <input id="${id}" name="${id}" class="form-control is-invalid" value="${form[id]}">
+            <div class="invalid-feedback">
+              ${errors[target][name]}
+            </div>
+          % else:
+            <input id="${id}" name="${id}" class="form-control is-valid" value="${form[id]}">
+          % endif
+        % else:
+          <input id="${id}" name="${id}" class="form-control">
+        % endif
+        </div>
+      </div>
+      <br/>
+    % endfor
+    </div>
+  % endfor
+    </div>
+  </div>
+</%def>
+
+<form method="POST">
+  <div class="col-12">
+    <div class="row g-3 align-items-center">
+      <div class="col-2">
+        <label class="card-text col-form-label"><b>Connection Name</b></label>
+      </div>
+      <div class="col-10">
+      % if validate and 'connection-name' in errors:
+        <input id="connection-name" name="connection-name" class="form-control is-invalid" value="${form['connection-name']}">
+        <div class="invalid-feedback">
+          ${errors['connection-name']}
+        </div>
+      % else:
+        <%
+          connection_name = ''
+          if form and 'connection_name' in form:
+            connection_name = form['connection-name']
+        %>
+        <input id="connection-name" name="connection-name" class="form-control" value="${connection_name}">
+      % endif
       </div>
     </div>
   </div>
-  <div class="col-auto">
-    <i class="fas fa-arrow-right"></i>
-  </div>
-  <div class="col-sm">
-    <div class="card">
-      <div class="card-header">Output</div>
-      <div class="card-body">
-        <p class="card-text">TODO: form</p>
-      </div>
+  <br/>
+  <div class="row align-items-center">
+    <div class="col-sm">
+      ${add_form('input')}
+    </div>
+    <div class="col-auto">
+      <i class="fas fa-arrow-right"></i>
+    </div>
+    <div class="col-sm">
+      ${add_form('output')}
     </div>
   </div>
-</div>
 
-<br/>
+  <br/>
 
-<div class="row">
-  <div class="col">
-    <button type="button" class="btn btn-primary float-right">Add</button>
+  <div class="row">
+    <div class="col">
+      <button type="submit" class="btn btn-primary float-right">Add</button>
+    </div>
   </div>
-</div>
+</form>
 
 <br/>
 
@@ -69,3 +149,25 @@
   </div>
 % endfor
 </div>
+
+
+<%block name="js">
+setVisible = function(target) {
+  elements = document.querySelectorAll('div.select-' + target);
+  for (i = 0; i < elements.length; i++) {
+    element = elements[i];
+    target_element = document.getElementById('select-' + target);
+    if (element.matches('div#' + target + '-' + target_element.value.replaceAll(' ', '-'))) {
+      element.style.display = '';
+    } else {
+      element.style.display = 'none';
+    }
+  }
+}
+
+setVisible('input');
+setVisible('output');
+
+document.getElementById('select-input').addEventListener('input', e => setVisible('input'));
+document.getElementById('select-output').addEventListener('input', e => setVisible('output'));
+</%block>
