@@ -6,12 +6,13 @@ import collections
 import os.path
 
 import fastapi
+import mako.exceptions
 import mako.lookup
 import mako.template
 
 from fastapi.responses import HTMLResponse
 
-from alhos_e_bugalhos.connections import Backend, Connection, Frontend, SettingError
+from alhos_e_bugalhos.connections import Backend, Connection, Frontend, MultipleSettingError, SettingError
 from alhos_e_bugalhos.connections.example import ExampleBackend, ExampleFrontend
 
 
@@ -23,6 +24,29 @@ app = fastapi.FastAPI()
 templates = mako.lookup.TemplateLookup(directories=[
     os.path.join(os.path.dirname(__file__), 'templates')
 ])
+
+
+available_settings = {
+    'input': {
+        backend.TYPE_NAME: backend.SETTINGS
+        for backend in Backend.__subclasses__()
+    },
+    'output': {
+        frontend.TYPE_NAME: frontend.SETTINGS
+        for frontend in Frontend.__subclasses__()
+    },
+}
+
+available_providers = {
+    'input': {
+        backend.TYPE_NAME: backend
+        for backend in Backend.__subclasses__()
+    },
+    'output': {
+        frontend.TYPE_NAME: frontend
+        for frontend in Frontend.__subclasses__()
+    },
+}
 
 active_connections = [
     Connection(
@@ -92,6 +116,79 @@ active_connections = [
 async def root():
     return templates.get_template('index.html').render(
         connections=active_connections,
+        available_settings=available_settings,
+    )
+
+
+@app.post('/', response_class=HTMLResponse)
+async def add_form(request: fastapi.Request):  # noqa: C901
+    validate = True
+    connection_name = None
+    # target, name, error string
+    provider = {
+        'input': None,
+        'output': None,
+    }
+    arguments = {
+        'input': {},
+        'output': {},
+    }
+    arguments = {
+        'input': collections.defaultdict(dict),
+        'output': collections.defaultdict(dict),
+    }
+    errors = {
+        'input': {},
+        'output': {},
+    }
+    single_error = None
+
+    # get form data
+    for key, value in (await request.form()).items():
+        if key == 'select-input':
+            provider['input'] = value
+        elif key == 'select-output':
+            provider['output'] = value
+        elif key == 'connection-name':
+            connection_name = value
+        else:
+            provider_type, target, name = key.split('-', maxsplit=2)
+
+            if target == provider[provider_type]:
+                arguments[provider_type][name] = value
+
+    if not connection_name:
+        errors['connection-name'] = 'Invalid name.'
+
+    # create providers (frontend and backend)
+    providers = {}
+    for type_ in ('input', 'output'):
+        try:
+            provider_cls = available_providers[type_][provider[type_]]
+            providers[type_] = provider_cls(arguments[type_])
+        except KeyError:
+            errors[type_]['select'] = 'Please select a type.'
+        except SettingError as e:
+            single_error = e.args[0]
+        except MultipleSettingError as e:
+            errors[type_] = e.errors
+
+    # add connection
+    if 'input' in providers and 'output' in providers and connection_name:
+        active_connections.append(Connection(
+            connection_name,
+            providers['input'],
+            providers['output'],
+        ))
+        validate = False
+
+    return templates.get_template('index.html').render(
+        connections=active_connections,
+        available_settings=available_settings,
+        validate=validate,
+        single_error=single_error,
+        errors=errors,
+        form=await request.form(),
     )
 
 
