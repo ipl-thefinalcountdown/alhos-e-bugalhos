@@ -17,6 +17,8 @@ class ExampleBackend(alhos_e_bugalhos.connections.Backend):
 
     def validate_setting(self, name: str, value: Any):
         if name == 'Host':
+            if not value:
+                raise alhos_e_bugalhos.connections.SettingError('Invalid Host')
             return str(value)
         elif name == 'Port':
             try:
