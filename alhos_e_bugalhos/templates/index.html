@@ -142,14 +142,25 @@
       </div>
       <div class="card-body">
         <h5 class="card-title">Input</h5>
-        <p class="card-text"><b>Type:</b> ${connection.input.TYPE_NAME}</p>
+        <p class="card-text"><b>Type:</b> ${connection.input.TYPE_NAME | h}</p>
       % for name, value in connection.input.settings.items():
-        <p class="card-text"><b>${name}:</b> ${value}</p>
+        <!-- XXX: if the data is too long (XML for eg), put it in a modal and add replace the text with a button to open -->
+        <p class="card-text"><b>${name | h}:</b> ${value | h}</p>
       % endfor
         <h5 class="card-title">Output</h5>
-      <p class="card-text"><b>Type:</b> ${connection.output.TYPE_NAME}</p>
+      <p class="card-text"><b>Type:</b> ${connection.output.TYPE_NAME | h}</p>
       % for name, value in connection.output.settings.items():
-        <p class="card-text"><b>${name}:</b> ${value}</p>
+      % if '@HOST@' in value:
+      <%
+        url = f'http://{request.url.hostname}'
+        if request.url.port != 80:
+          url += f':{request.url.port}'
+        value = value.replace('@HOST@', url)
+      %>
+        <p class="card-text"><b>${name | h}:</b> <a href="${value}">${value | h}</a></p>
+      % else:
+        <p class="card-text"><b>${name | h}:</b> ${value | h}</p>
+      % endif
       % endfor
       </div>
     </div>

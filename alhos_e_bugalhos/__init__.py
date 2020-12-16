@@ -130,8 +130,9 @@ def template(name):
 
 @app.get('/', response_class=HTMLResponse)
 @template('index')
-async def root():
+async def root(request: fastapi.Request):
     return {
+        'request': request,
         'connections': active_connections,
         'available_settings': available_settings,
     }
@@ -201,6 +202,7 @@ async def add_form(request: fastapi.Request):  # noqa: C901
         validate = False
 
     return {
+        'request': request,
         'connections': active_connections,
         'available_settings': available_settings,
         'validate': validate,
@@ -212,9 +214,10 @@ async def add_form(request: fastapi.Request):  # noqa: C901
 
 @app.get('/edit/{id}', response_class=HTMLResponse)
 @template('edit')
-async def edit(id: int):
+async def edit(id: int, request: fastapi.Request):
     # TODO: handle invalid ID
     return {
+        'request': request,
         'connection': active_connections[id],
     }
 
@@ -237,6 +240,7 @@ async def edit_form(id: int, request: fastapi.Request):
             errors[target][name].append(e.args[0])
 
     return {
+        'request': request,
         'connection': active_connections[id],
         'validate': True,
         'errors': errors,
