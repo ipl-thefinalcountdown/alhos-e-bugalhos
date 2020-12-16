@@ -2,7 +2,7 @@
 
 <%def name="add_form(target)">
   <div class="card">
-    <div class="card-header">${target.capitalize()}</div>
+    <div class="card-header">${target.capitalize() | h}</div>
     <div class="card-body">
 
       <div class="row g-3 align-items-center">
@@ -20,7 +20,7 @@
             <%
               selected = 'selected' if form and form[f'select-{target}'] == provider else ''
             %>
-            <option value="${provider}" ${selected}>${provider}</option>
+            <option value="${provider | h}" ${selected}>${provider | h}</option>
           % endfor
           </select>
         % if invalid:
@@ -33,24 +33,24 @@
       <br/>
 
   % for provider, settings in available_settings[target].items():
-    <div id="${target}-${provider.replace(' ', '-')}" class="select-${target}" style="display: none">
+    <div id="${target}-${provider.replace(' ', '-') | h}" class="select-${target | h}" style="display: none">
     % for name in settings:
       <%
         id = '-'.join((target, provider, name))
       %>
       <div class="row g-3 align-items-center">
         <div class="col-auto">
-          <label class="card-text col-form-label" for="${id}" ><b>${name}</b></label>
+          <label class="card-text col-form-label" for="${id}" ><b>${name | h}</b></label>
         </div>
         <div class="col-auto">
         % if validate:
           % if name in errors[target]:
-            <input id="${id}" name="${id}" class="form-control is-invalid" value="${form[id]}">
+            <input id="${id}" name="${id}" class="form-control is-invalid" value="${form[id] | h}">
             <div class="invalid-feedback">
-              ${errors[target][name]}
+              ${errors[target][name] | h}
             </div>
           % else:
-            <input id="${id}" name="${id}" class="form-control is-valid" value="${form[id]}">
+            <input id="${id}" name="${id}" class="form-control is-valid" value="${form[id] | h}">
           % endif
         % else:
           <input id="${id}" name="${id}" class="form-control">
@@ -73,9 +73,9 @@
       </div>
       <div class="col-10">
       % if validate and 'connection-name' in errors:
-        <input id="connection-name" name="connection-name" class="form-control is-invalid" value="${form['connection-name']}">
+        <input id="connection-name" name="connection-name" class="form-control is-invalid" value="${form['connection-name'] | h}">
         <div class="invalid-feedback">
-          ${errors['connection-name']}
+          ${errors['connection-name'] | h}
         </div>
       % else:
         <%
@@ -83,7 +83,7 @@
           if form and 'connection_name' in form:
             connection_name = form['connection-name']
         %>
-        <input id="connection-name" name="connection-name" class="form-control" value="${connection_name}">
+        <input id="connection-name" name="connection-name" class="form-control" value="${connection_name | h}">
       % endif
       </div>
     </div>
@@ -131,7 +131,7 @@
       <div class="card-header">
         <div class="row align-items-center">
           <div class="col">
-            ${connection.name}
+            ${connection.name | h}
           </div>
           <div class="col-xs">
             <a type="button" class="btn btn-outline-secondary mt-0 mb-0 ml-1 pt-1 pb-1 pl-2 pr-2 float-right" href="edit/${id}">

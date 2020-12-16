@@ -5,14 +5,14 @@
     provider = getattr(connection, target)
   %>
   <div class="card">
-    <div class="card-header">${target.capitalize()}</div>
+    <div class="card-header">${target.capitalize() | h}</div>
     <div class="card-body">
       <div class="row g-3 align-items-center">
         <div class="col-auto">
           <label class="card-text col-form-label"><b>Type</b></label>
         </div>
         <div class="col-auto">
-          <label class="card-text col-form-label">${provider.TYPE_NAME}</label>
+          <label class="card-text col-form-label">${provider.TYPE_NAME | h}</label>
         </div>
       </div>
       <br/>
@@ -22,20 +22,21 @@
       %>
       <div class="row g-3 align-items-center">
         <div class="col-auto">
-          <label class="card-text col-form-label" for="${id}" ><b>${name}</b></label>
+          <label class="card-text col-form-label" for="${id}" ><b>${name | h}</b></label>
         </div>
         <div class="col-auto">
+        <!-- XXX: if the data is too long (XML for eg), replace the input with a textbox -->
         % if validate:
           % if errors[target][name]:
-            <input id="${id}" name="${id}" class="form-control is-invalid" value="${form[id]}">
+            <input id="${id}" name="${id}" class="form-control is-invalid" value="${form[id] | h}">
             <div class="invalid-feedback">
-              ${'. '.join(errors[target][name])}
+              ${'. '.join(errors[target][name]) | h}
             </div>
           % else:
-            <input id="${id}" name="${id}" class="form-control is-valid" value="${value}">
+            <input id="${id}" name="${id}" class="form-control is-valid" value="${value | h}">
           % endif
         % else:
-          <input id="${id}" name="${id}" class="form-control" value="${value}">
+          <input id="${id}" name="${id}" class="form-control" value="${value | h}">
         % endif
         </div>
       </div>
