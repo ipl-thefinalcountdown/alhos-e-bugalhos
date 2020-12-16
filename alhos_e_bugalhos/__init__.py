@@ -14,7 +14,9 @@ import mako.template
 from fastapi.responses import HTMLResponse
 
 from alhos_e_bugalhos.connections import Backend, Connection, Frontend, MultipleSettingError, SettingError
+from alhos_e_bugalhos.connections.backends import XMLBackend
 from alhos_e_bugalhos.connections.example import ExampleBackend, ExampleFrontend
+from alhos_e_bugalhos.connections.frontends import HTMLFrontend
 
 
 __version__ = '0.0.0b0'
@@ -51,6 +53,28 @@ available_providers = {
 
 active_connections = [
     Connection(
+        'XML Example',
+        XMLBackend({
+            'Data': '''
+                <interface name="org.freedesktop.DBus.Properties">
+                    <method name="GetAll">
+                        <arg direction="in" type="s" name="interface_name" />
+                        <arg direction="out" type="a{sv}" />
+                    </method>
+                </interface>
+            ''',
+        }),
+        HTMLFrontend({}),
+    ),
+    Connection(
+        'HTML Example',
+        ExampleBackend({
+            'Host': '0.0.0.0',
+            'Port': 8081,
+        }),
+        HTMLFrontend({}),
+    ),
+    Connection(
         'Example 1',
         ExampleBackend({
             'Host': '0.0.0.0',
@@ -78,36 +102,6 @@ active_connections = [
         }),
         ExampleFrontend({
             'URL': 'http://localhost/example3',
-        }),
-    ),
-    Connection(
-        'Example 4',
-        ExampleBackend({
-            'Host': '0.0.0.0',
-            'Port': 8084,
-        }),
-        ExampleFrontend({
-            'URL': 'http://localhost/example4',
-        }),
-    ),
-    Connection(
-        'Example 5',
-        ExampleBackend({
-            'Host': '0.0.0.0',
-            'Port': 8085,
-        }),
-        ExampleFrontend({
-            'URL': 'http://localhost/example5',
-        }),
-    ),
-    Connection(
-        'Example 6',
-        ExampleBackend({
-            'Host': '0.0.0.0',
-            'Port': 8086,
-        }),
-        ExampleFrontend({
-            'URL': 'http://localhost/example6',
         }),
     ),
 ]
