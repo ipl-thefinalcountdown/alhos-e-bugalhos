@@ -14,9 +14,9 @@ import mako.template
 from fastapi.responses import HTMLResponse
 
 from alhos_e_bugalhos.connections import Backend, Connection, Frontend, MultipleSettingError, SettingError
-from alhos_e_bugalhos.connections.backends import XMLBackend
+from alhos_e_bugalhos.connections.backends import RESTBackend, XMLBackend
 from alhos_e_bugalhos.connections.example import ExampleBackend, ExampleFrontend
-from alhos_e_bugalhos.connections.frontends import HTMLFrontend
+from alhos_e_bugalhos.connections.frontends import HTMLFrontend, RESTFrontend
 
 
 __version__ = '0.0.0b0'
@@ -53,7 +53,7 @@ available_providers = {
 
 active_connections = [
     Connection(
-        'XML Example',
+        'XML>HTML Example',
         XMLBackend({
             'Data': '''
                 <interface name="org.freedesktop.DBus.Properties">
@@ -67,22 +67,20 @@ active_connections = [
         HTMLFrontend({}),
     ),
     Connection(
-        'HTML Example',
-        ExampleBackend({
-            'Host': '0.0.0.0',
-            'Port': 8081,
+        'REST>HTML Example',
+        RESTBackend({
+            'URL': 'https://official-joke-api.appspot.com/jokes/programming/random',
+            'Type': 'GET',
         }),
         HTMLFrontend({}),
     ),
     Connection(
-        'Example 1',
+        '>REST Example',
         ExampleBackend({
             'Host': '0.0.0.0',
             'Port': 8081,
         }),
-        ExampleFrontend({
-            'URL': 'http://localhost/example1',
-        }),
+        RESTFrontend({}),
     ),
     Connection(
         'Example 2',
