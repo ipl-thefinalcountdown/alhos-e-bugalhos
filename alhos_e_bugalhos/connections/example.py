@@ -26,6 +26,13 @@ class ExampleBackend(alhos_e_bugalhos.connections.Backend):
             except ValueError:
                 raise alhos_e_bugalhos.connections.SettingError('Invalid Port')
 
+    def get_data(self, params=None):
+        return {
+            'example1': 'dummy1',
+            'example2': 'dummy2',
+            'example3': 'dummy3',
+        }
+
 
 class ExampleFrontend(alhos_e_bugalhos.connections.Frontend):
     '''
@@ -42,3 +49,6 @@ class ExampleFrontend(alhos_e_bugalhos.connections.Frontend):
             if not validators.url(value):
                 raise alhos_e_bugalhos.connections.SettingError('Invalid URL')
             return value
+
+    def register(self, get_data):
+        pass

@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import abc
 
-from typing import Any, ClassVar, Dict, List, Optional, Union
+from typing import Any, Callable, ClassVar, Dict, List, Optional, Union
 
 
 SettingValues = Union[str, int]
@@ -71,7 +73,6 @@ class Provider(abc.ABC):
     def available_settings(self) -> List[str]:
         return self.SETTINGS
 
-    @abc.abstractmethod
     def validate_setting(self, name: str, value: Any) -> Optional[SettingValues]:
         '''
         Validates a setting value and returns the internal interpretation for it
@@ -80,11 +81,21 @@ class Provider(abc.ABC):
 
 
 class Backend(Provider):
-    pass
+    @abc.abstractmethod
+    def get_data(self, params: Optional[Dict[str, str]] = None) -> Dict[Any, Any]:
+        pass
+
+
+BackendGetData = Callable[[Optional[Dict[str, str]]], Dict[Any, Any]]
 
 
 class Frontend(Provider):
-    pass
+    @abc.abstractmethod
+    def register(self, get_data: BackendGetData):
+        pass
+
+    def unregister(self):
+        pass
 
 
 class Connection():
@@ -92,6 +103,11 @@ class Connection():
         self._name = name
         self._input = input_
         self._output = output
+
+        self.output.register(self.input.get_data)
+
+    def __del__(self):
+        self.output.unregister()
 
     @property
     def name(self) -> str:
