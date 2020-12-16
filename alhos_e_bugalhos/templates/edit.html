@@ -19,6 +19,9 @@
     % for name, value in provider.settings.items():
       <%
         id = '-'.join((target, name))
+        # XXX this is completely wrong -- we don't have time to fix this properly so we are hacking around it
+        if '@HOST@' in value:
+          continue
       %>
       <div class="row g-3 align-items-center">
         <div class="col-auto">
