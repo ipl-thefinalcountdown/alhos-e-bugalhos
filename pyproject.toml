@@ -16,6 +16,7 @@ requires = [
     'xlrd~=1.2.0',
     'validators',
     'requests',
+    'pyyaml',
 ]
 
 [tool.flit.metadata.requires-extra]
