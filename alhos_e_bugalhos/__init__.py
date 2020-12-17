@@ -10,6 +10,7 @@ import fastapi
 import mako.exceptions
 import mako.lookup
 import mako.template
+import toml
 
 from fastapi.responses import HTMLResponse
 
@@ -49,68 +50,55 @@ available_providers = {
     },
 }
 
-active_connections = [
-    Connection(
-        'Example 1',
-        ExampleBackend({
-            'Host': '0.0.0.0',
-            'Port': 8081,
-        }),
-        ExampleFrontend({
-            'URL': 'http://localhost/example1',
-        }),
-    ),
-    Connection(
-        'Example 2',
-        ExampleBackend({
-            'Host': '0.0.0.0',
-            'Port': 8082,
-        }),
-        ExampleFrontend({
-            'URL': 'http://localhost/example2',
-        }),
-    ),
-    Connection(
-        'Example 3',
-        ExampleBackend({
-            'Host': '0.0.0.0',
-            'Port': 8083,
-        }),
-        ExampleFrontend({
-            'URL': 'http://localhost/example3',
-        }),
-    ),
-    Connection(
-        'Example 4',
-        ExampleBackend({
-            'Host': '0.0.0.0',
-            'Port': 8084,
-        }),
-        ExampleFrontend({
-            'URL': 'http://localhost/example4',
-        }),
-    ),
-    Connection(
-        'Example 5',
-        ExampleBackend({
-            'Host': '0.0.0.0',
-            'Port': 8085,
-        }),
-        ExampleFrontend({
-            'URL': 'http://localhost/example5',
-        }),
-    ),
-    Connection(
-        'Example 6',
-        ExampleBackend({
-            'Host': '0.0.0.0',
-            'Port': 8086,
-        }),
-        ExampleFrontend({
-            'URL': 'http://localhost/example6',
-        }),
-    ),
-]
+active_connections = []
+
+
+def load_settings():
+    if 'AEB_CONFIG' in os.environ:
+        with open(os.environ['AEB_CONFIG']) as f:
+            return toml.loads(f.read())
+    return {}
+
+
+def save_settings():
+    if 'AEB_CONFIG' not in os.environ:
+        return
+    data = {}
+    for connection in active_connections:
+        key = str(id(connection.name))
+        data[key] = {}
+        data[key]['name'] = connection.name
+        data[key]['input'] = {
+            'type': connection.input.TYPE_NAME,
+            'settings': connection.input.settings,
+        }
+        data[key]['output'] = {
+            'type': connection.output.TYPE_NAME,
+            'settings': connection.output.settings,
+        }
+    from pprint import pprint
+    pprint(data)
+    with open(os.environ['AEB_CONFIG'], 'w') as f:
+        f.write(toml.dumps(data))
+
+
+providers = {}
+for name, data in load_settings().items():
+    if 'name' not in data:
+        raise SettingError(f'Missing key in config: {name}.name')
+    for target in ('input', 'output'):
+        if target not in data:
+            raise SettingError(f'Missing section in config: {name}.{target}')
+        for key in ('type', 'settings'):
+            if key not in data[target]:
+                raise SettingError(f'Missing section in config: {name}.{target}.{key}')
+        provider_cls = available_providers[target][data[target]['type']]
+        providers[target] = provider_cls(data[target]['settings'])
+    active_connections.append(Connection(
+        data['name'],
+        providers['input'],
+        providers['output'],
+    ))
 
 
 def template(name):
@@ -198,6 +186,7 @@ async def add_form(request: fastapi.Request):  # noqa: C901
             providers['input'],
             providers['output'],
         ))
+        save_settings()
         validate = False
 
     return {
@@ -235,6 +224,8 @@ async def edit_form(id: int, request: fastapi.Request):
         except SettingError as e:
             # TODO: customize the exception
             errors[target][name].append(e.args[0])
+
+    save_settings()
 
     return {
         'connection': active_connections[id],
