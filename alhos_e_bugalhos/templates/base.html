@@ -1,3 +1,9 @@
+<%
+  url = f'http://{request.url.hostname}'
+  if request.url.port != 80:
+    url += f':{request.url.port}'
+%>
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -21,8 +27,10 @@
   <body>
     <div class="container">
       <div class="jumbotron text-center">
-        <h1>Alhos e Bugalhos</h1>
-        <p>É tudo a mesma coisa!</p>
+        <a href="${url}">
+          <h1>Alhos e Bugalhos</h1>
+          <p>É tudo a mesma coisa!</p>
+        </a>
       </div>
 
       <div class="container">
