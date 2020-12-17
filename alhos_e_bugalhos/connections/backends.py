@@ -1,10 +1,12 @@
 import csv
 import io
 import json
+import socket
 import xml.etree.ElementTree as ET
 
 from typing import Any
 
+import paho.mqtt.client as mqtt
 import requests
 import validators
 import xmltodict
@@ -128,3 +130,58 @@ class RESTBackend(alhos_e_bugalhos.connections.Backend):
             'status': response.status_code,
             'data': response.json(),
         }
+
+
+class MQTTBackend(alhos_e_bugalhos.connections.Backend):
+    TYPE_NAME = 'MQTT'
+    SETTINGS = [
+        'Host',
+        'Topic',
+    ]
+
+    def __init__(self, settings):
+        super().__init__(settings)
+        self._data = []
+        self._client = mqtt.Client()
+        self._client.on_message = self.on_message
+
+        try:
+            host, port = self.settings['Host'].split(':')
+        except ValueError:
+            host = self.settings['Host']
+            port = 1883
+
+        self._client.connect(host, port)
+        self._client.loop_start()
+        self._client.subscribe(self.settings['Topic'])
+
+    def __del__(self):
+        self._client.loop_stop()
+
+    def validate_setting(self, name: str, value: Any):
+        if name == 'Host':
+            try:
+                host, port = value.split(':')
+            except ValueError:
+                host = value
+                port = 1883
+            try:
+                mqtt.Client().connect(host, port, keepalive=1)
+            except socket.timeout:
+                raise alhos_e_bugalhos.connections.SettingError('Could not reach host')
+            except Exception:
+                raise alhos_e_bugalhos.connections.SettingError('Invalid Host')
+            return value
+        elif name == 'Topic':
+            value = str(value)
+            if not value:
+                raise alhos_e_bugalhos.connections.SettingError('Invalid Topic')
+            return value
+
+    def get_data(self, params=None):
+        data = self._data.copy()
+        self._data.clear()
+        return data
+
+    def on_message(self, client, userdata, msg):
+        self._data.append(msg.payload.decode())
