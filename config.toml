@@ -50,6 +50,19 @@ Type = "GET"
 [example_rest_yaml.output]
 type = "YAML"
 
+[example_rest_toml]
+name = "REST>TOML"
+
+[example_rest_toml.input]
+type = "REST JSON"
+
+[example_rest_toml.input.settings]
+URL = "https://official-joke-api.appspot.com/jokes/programming/random"
+Type = "GET"
+
+[example_rest_toml.output]
+type = "TOML"
+
 [example_toml_to_yaml]
 name = "YAML>TOML"
 

@@ -5,6 +5,7 @@ import uuid
 import dicttoxml
 import fastapi
 import json2html
+import toml
 import yaml
 
 from fastapi.responses import HTMLResponse, PlainTextResponse
@@ -113,6 +114,27 @@ class YAMLFrontend(alhos_e_bugalhos.connections.Frontend):
         @self._app.get('/', response_class=PlainTextResponse)
         def dispatch():
             return yaml.dump(get_data())
+
+        self._settings['URL'] = f'@HOST@/{self._id}'
+
+        alhos_e_bugalhos.app.mount(f'/{self._id}', self._app)
+
+    def unresgister(self):
+        # fastapi doesn't let us remove the mount so we replace it
+        alhos_e_bugalhos.app.mount(f'/{self._id}', fastapi.FastAPI())
+
+
+class TOMLFrontend(alhos_e_bugalhos.connections.Frontend):
+    TYPE_NAME = 'TOML'
+    SETTINGS = {}
+
+    def register(self, get_data):
+        self._id = uuid.uuid4()
+        self._app = fastapi.FastAPI()
+
+        @self._app.get('/', response_class=PlainTextResponse)
+        def dispatch():
+            return toml.dumps(get_data())
 
         self._settings['URL'] = f'@HOST@/{self._id}'
 
