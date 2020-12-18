@@ -18,6 +18,7 @@ requires = [
     'requests',
     'pyyaml',
     'xmltodict',
+    'dicttoxml',
 ]
 
 [tool.flit.metadata.requires-extra]
