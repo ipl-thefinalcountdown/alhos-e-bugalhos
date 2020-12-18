@@ -1,0 +1,89 @@
+[example_xml_html]
+name = "XML>HTML Example"
+
+[example_xml_html.input]
+type = "XML"
+
+[example_xml_html.input.settings]
+Data = "\n                <interface name=\"org.freedesktop.DBus.Properties\">\n                    <method name=\"GetAll\">\n                        <arg direction=\"in\" type=\"s\" name=\"interface_name\" />\n                        <arg direction=\"out\" type=\"a{sv}\" />\n                    </method>\n                </interface>\n            "
+
+[example_xml_html.output]
+type = "HTML"
+
+[example_rest_html]
+name = "REST>HTML Example"
+
+[example_rest_html.input]
+type = "REST JSON"
+
+[example_rest_html.input.settings]
+URL = "https://official-joke-api.appspot.com/jokes/programming/random"
+Type = "GET"
+
+[example_rest_html.output]
+type = "HTML"
+
+[example_rest_xml]
+name = "REST>XML"
+
+[example_rest_xml.input]
+type = "REST JSON"
+
+[example_rest_xml.input.settings]
+URL = "https://official-joke-api.appspot.com/jokes/programming/random"
+Type = "GET"
+
+[example_rest_xml.output]
+type = "XML"
+
+[example_rest_csv]
+name = "REST>CSV"
+
+[example_rest_csv.input]
+type = "REST JSON"
+
+[example_rest_csv.input.settings]
+URL = "https://official-joke-api.appspot.com/jokes/programming/random"
+Type = "GET"
+
+[example_rest_csv.output]
+type = "CSV"
+
+[example_rest_yaml]
+name = "REST>YAML"
+
+[example_rest_yaml.input]
+type = "REST JSON"
+
+[example_rest_yaml.input.settings]
+URL = "https://official-joke-api.appspot.com/jokes/programming/random"
+Type = "GET"
+
+[example_rest_yaml.output]
+type = "YAML"
+
+[example_yaml_to]
+name = "REST>YAML"
+
+[example_yaml_to.input]
+type = "REST JSON"
+
+[example_yaml_to.input.settings]
+URL = "https://official-joke-api.appspot.com/jokes/programming/random"
+Type = "GET"
+
+[example_yaml_to.output]
+type = "YAML"
+
+[examplerest_rest]
+name = "REST>REST Example"
+
+[examplerest_rest.input]
+type = "REST JSON"
+
+[examplerest_rest.input.settings]
+URL = "https://official-joke-api.appspot.com/jokes/programming/random"
+Type = "GET"
+
+[examplerest_rest.output]
+type = "REST JSON"
