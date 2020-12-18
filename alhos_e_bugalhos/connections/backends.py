@@ -8,6 +8,7 @@ from typing import Any
 
 import paho.mqtt.client as mqtt
 import requests
+import toml
 import validators
 import xmltodict
 import yaml
@@ -89,6 +90,24 @@ class YAMLBackend(alhos_e_bugalhos.connections.Backend):
 
     def get_data(self, params=None):
         return dict(yaml.load(self.settings['Data']))
+
+
+class TOMLBackend(alhos_e_bugalhos.connections.Backend):
+    TYPE_NAME = 'TOML'
+    SETTINGS = [
+        'Data',
+    ]
+
+    def validate_setting(self, name: str, value: Any):
+        if name == 'Data':
+            try:
+                dict(toml.loads(value))
+            except (TypeError, ValueError, yaml.YAMLError):
+                raise alhos_e_bugalhos.connections.SettingError('Invalid Data')
+            return value
+
+    def get_data(self, params=None):
+        return dict(toml.loads(self.settings['Data']))
 
 
 class RESTJsonBackend(alhos_e_bugalhos.connections.Backend):
