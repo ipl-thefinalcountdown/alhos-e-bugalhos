@@ -243,6 +243,7 @@ async def edit(id: int, request: fastapi.Request):
     return {
         'request': request,
         'connection': list(active_connections.values())[id],
+        'available_text_settings': available_text_settings,
     }
 
 
@@ -268,6 +269,7 @@ async def edit_form(id: int, request: fastapi.Request):
     return {
         'request': request,
         'connection': list(active_connections.values())[id],
+        'available_text_settings': available_text_settings,
         'validate': True,
         'errors': errors,
         'form': await request.form(),

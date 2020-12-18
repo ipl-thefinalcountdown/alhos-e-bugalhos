@@ -18,10 +18,19 @@
       <br/>
     % for name, value in provider.settings.items():
       <%
-        id = '-'.join((target, name))
         # XXX this is completely wrong -- we don't have time to fix this properly so we are hacking around it
         if '@HOST@' in value:
           continue
+
+        id = '-'.join((target, name))
+        invalid = validate and name in errors[target]
+
+        if validate:
+          valid_class = 'is-invalid' if invalid else 'is-valid'
+        else:
+          valid_class = ''
+
+        is_textbox = available_text_settings[target][provider.TYPE_NAME] and name in available_text_settings[target][provider.TYPE_NAME]
       %>
       <div class="row g-3 align-items-center">
         <div class="col-auto">
@@ -30,16 +39,22 @@
         <div class="col-auto">
         <!-- XXX: if the data is too long (XML for eg), replace the input with a textbox -->
         % if validate:
-          % if errors[target][name]:
-            <input id="${id}" name="${id}" class="form-control is-invalid" value="${form[id] | h}">
-            <div class="invalid-feedback">
-              ${'. '.join(errors[target][name]) | h}
-            </div>
+          % if is_textbox:
+            <textarea id="${id}" name="${id}" rows="6" class="form-control ${valid_class}">${form[id] | h}</textarea>
           % else:
-            <input id="${id}" name="${id}" class="form-control is-valid" value="${value | h}">
+            <input id="${id}" name="${id}" class="form-control ${valid_class}" value="${form[id] | h}">
+          % endif
+          % if invalid:
+            <div class="invalid-feedback">
+              ${'. '.join(errors[target][name]) + '.' | h}
+            </div>
           % endif
         % else:
-          <input id="${id}" name="${id}" class="form-control" value="${value | h}">
+          % if is_textbox:
+            <textarea id="${id}" name="${id}" rows="6" class="form-control">${value | h}</textarea>
+          % else:
+            <input id="${id}" name="${id}" class="form-control" value='${value | h}'>
+          % endif
         % endif
         </div>
       </div>
