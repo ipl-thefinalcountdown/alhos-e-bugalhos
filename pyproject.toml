@@ -14,7 +14,6 @@ requires = [
     'fastapi~=0.62.0',
     'mako~=1.1.0',
     'tomlkit',
-    'xlrd~=1.2.0',
     'validators',
     'requests',
     'pyyaml',
