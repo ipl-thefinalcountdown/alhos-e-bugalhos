@@ -30,8 +30,8 @@ class HTMLFrontend(alhos_e_bugalhos.connections.Frontend):
         alhos_e_bugalhos.app.mount(f'/{self._id}', fastapi.FastAPI())
 
 
-class RESTFrontend(alhos_e_bugalhos.connections.Frontend):
-    TYPE_NAME = 'REST'
+class RESTJsonFrontend(alhos_e_bugalhos.connections.Frontend):
+    TYPE_NAME = 'REST JSON'
     SETTINGS = {}
 
     def register(self, get_data):

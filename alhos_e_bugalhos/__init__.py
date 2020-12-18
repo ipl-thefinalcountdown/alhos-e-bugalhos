@@ -14,9 +14,9 @@ import mako.template
 from fastapi.responses import HTMLResponse
 
 from alhos_e_bugalhos.connections import Backend, Connection, Frontend, MultipleSettingError, SettingError
-from alhos_e_bugalhos.connections.backends import RESTBackend, XMLBackend
+from alhos_e_bugalhos.connections.backends import RESTJsonBackend, XMLBackend
 from alhos_e_bugalhos.connections.example import ExampleBackend, ExampleFrontend
-from alhos_e_bugalhos.connections.frontends import HTMLFrontend, RESTFrontend
+from alhos_e_bugalhos.connections.frontends import HTMLFrontend, RESTJsonFrontend
 
 
 __version__ = '0.0.0b0'
@@ -68,7 +68,7 @@ active_connections = [
     ),
     Connection(
         'REST>HTML Example',
-        RESTBackend({
+        RESTJsonBackend({
             'URL': 'https://official-joke-api.appspot.com/jokes/programming/random',
             'Type': 'GET',
         }),
@@ -80,7 +80,7 @@ active_connections = [
             'Host': '0.0.0.0',
             'Port': 8081,
         }),
-        RESTFrontend({}),
+        RESTJsonFrontend({}),
     ),
     Connection(
         'Example 2',

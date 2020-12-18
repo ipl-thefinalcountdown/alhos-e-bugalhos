@@ -91,8 +91,8 @@ class YAMLBackend(alhos_e_bugalhos.connections.Backend):
         return dict(yaml.load(self.settings['Data']))
 
 
-class RESTBackend(alhos_e_bugalhos.connections.Backend):
-    TYPE_NAME = 'REST'
+class RESTJsonBackend(alhos_e_bugalhos.connections.Backend):
+    TYPE_NAME = 'REST JSON'
     SETTINGS = [
         'URL',
         'Type',
