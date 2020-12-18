@@ -242,7 +242,7 @@ async def edit(id: int, request: fastapi.Request):
     # TODO: handle invalid ID
     return {
         'request': request,
-        'connection': active_connections.values()[id],
+        'connection': list(active_connections.values())[id],
     }
 
 
@@ -258,7 +258,7 @@ async def edit_form(id: int, request: fastapi.Request):
     for key, value in (await request.form()).items():
         target, name = key.split('-', maxsplit=1)  # XXX !! only 1 worded names supported
         try:
-            getattr(active_connections.values()[id], target).update_setting(name, value)
+            getattr(list(active_connections.values())[id], target).update_setting(name, value)
         except SettingError as e:
             # TODO: customize the exception
             errors[target][name].append(e.args[0])
@@ -267,7 +267,7 @@ async def edit_form(id: int, request: fastapi.Request):
 
     return {
         'request': request,
-        'connection': active_connections[id],
+        'connection': list(active_connections.values())[id],
         'validate': True,
         'errors': errors,
         'form': await request.form(),
