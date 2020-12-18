@@ -11,6 +11,7 @@ import fastapi
 import mako.exceptions
 import mako.lookup
 import mako.template
+import tomlkit
 
 from fastapi.responses import HTMLResponse
 
@@ -109,6 +110,60 @@ active_connections = {
 }
 
 
+def load_settings():
+    if 'AEB_CONFIG' in os.environ:
+        try:
+            with open(os.environ['AEB_CONFIG'], 'r') as f:
+                return tomlkit.parse(f.read())
+        except FileNotFoundError:
+            pass
+    return {}
+
+
+def save_settings():
+    if 'AEB_CONFIG' not in os.environ:
+        return
+    data = {}
+    for key, connection in active_connections.items():
+        data[key] = {}
+        data[key]['name'] = connection.name
+        data[key]['input'] = {
+            'type': connection.input.TYPE_NAME,
+            'settings': connection.input.settings,
+        }
+        data[key]['output'] = {
+            'type': connection.output.TYPE_NAME,
+            'settings': connection.output.settings,
+        }
+        # XXX skip generated settings
+        for target in ('input', 'output'):
+            for name, value in data[key][target]['settings'].copy().items():
+                if '@HOST@' in value:
+                    del data[key][target]['settings'][name]
+            if not data[key][target]['settings']:
+                del data[key][target]['settings']
+    with open(os.environ['AEB_CONFIG'], 'w') as f:
+        f.write(tomlkit.dumps(data))
+
+
+providers = {}
+for name, data in load_settings().items():
+    if 'name' not in data:
+        raise SettingError(f'Missing key in config: {name}.name')
+    for target in ('input', 'output'):
+        if target not in data:
+            raise SettingError(f'Missing section in config: {name}.{target}')
+        if 'type' not in data[target]:
+            raise SettingError(f'Missing section in config: {name}.{target}.type')
+        provider_cls = available_providers[target][data[target]['type']]
+        providers[target] = provider_cls(data[target].get('settings', {}))
+    active_connections[name] = Connection(
+        data['name'],
+        providers['input'],
+        providers['output'],
+    )
+
+
 def template(name):
     def decorator(func):
         @functools.wraps(func)
@@ -196,6 +251,7 @@ async def add_form(request: fastapi.Request):  # noqa: C901
             providers['output'],
         )
         validate = False
+        save_settings()
 
     return {
         'request': request,
@@ -234,6 +290,8 @@ async def edit_form(id: int, request: fastapi.Request):
         except SettingError as e:
             # TODO: customize the exception
             errors[target][name].append(e.args[0])
+
+    save_settings()
 
     return {
         'request': request,
