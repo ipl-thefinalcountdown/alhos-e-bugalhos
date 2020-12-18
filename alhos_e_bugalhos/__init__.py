@@ -5,6 +5,7 @@ alhos_e_bugalhos
 import collections
 import functools
 import os.path
+import uuid
 
 import fastapi
 import mako.exceptions
@@ -50,8 +51,8 @@ available_providers = {
     },
 }
 
-active_connections = [
-    Connection(
+active_connections = {
+    'example_xml_html': Connection(
         'XML>HTML Example',
         XMLBackend({
             'Data': '''
@@ -65,7 +66,7 @@ active_connections = [
         }),
         HTMLFrontend({}),
     ),
-    Connection(
+    'example_rest_html': Connection(
         'REST>HTML Example',
         RESTJsonBackend({
             'URL': 'https://official-joke-api.appspot.com/jokes/programming/random',
@@ -73,7 +74,7 @@ active_connections = [
         }),
         HTMLFrontend({}),
     ),
-    Connection(
+    'example_rest_xml': Connection(
         'REST>XML',
         RESTJsonBackend({
             'URL': 'https://official-joke-api.appspot.com/jokes/programming/random',
@@ -81,7 +82,7 @@ active_connections = [
         }),
         XMLFrontend({}),
     ),
-    Connection(
+    'example_rest_csv': Connection(
         'REST>CSV',
         RESTJsonBackend({
             'URL': 'https://official-joke-api.appspot.com/jokes/programming/random',
@@ -89,7 +90,7 @@ active_connections = [
         }),
         CSVFrontend({}),
     ),
-    Connection(
+    'example_rest_yaml': Connection(
         'REST>YAML',
         RESTJsonBackend({
             'URL': 'https://official-joke-api.appspot.com/jokes/programming/random',
@@ -97,7 +98,7 @@ active_connections = [
         }),
         YAMLFrontend({}),
     ),
-    Connection(
+    'examplerest_rest':  Connection(
         'REST>REST Example',
         RESTJsonBackend({
             'URL': 'https://official-joke-api.appspot.com/jokes/programming/random',
@@ -105,7 +106,7 @@ active_connections = [
         }),
         RESTJsonFrontend({}),
     ),
-]
+}
 
 
 def template(name):
@@ -128,7 +129,7 @@ def template(name):
 async def root(request: fastapi.Request):
     return {
         'request': request,
-        'connections': active_connections,
+        'connections': active_connections.values(),
         'available_settings': available_settings,
     }
 
@@ -189,16 +190,16 @@ async def add_form(request: fastapi.Request):  # noqa: C901
 
     # add connection
     if 'input' in providers and 'output' in providers and connection_name:
-        active_connections.append(Connection(
+        active_connections[uuid.uuid4()] = Connection(
             connection_name,
             providers['input'],
             providers['output'],
-        ))
+        )
         validate = False
 
     return {
         'request': request,
-        'connections': active_connections,
+        'connections': active_connections.values(),
         'available_settings': available_settings,
         'validate': validate,
         'single_error': single_error,
@@ -213,7 +214,7 @@ async def edit(id: int, request: fastapi.Request):
     # TODO: handle invalid ID
     return {
         'request': request,
-        'connection': active_connections[id],
+        'connection': active_connections.values()[id],
     }
 
 
@@ -229,7 +230,7 @@ async def edit_form(id: int, request: fastapi.Request):
     for key, value in (await request.form()).items():
         target, name = key.split('-', maxsplit=1)  # XXX !! only 1 worded names supported
         try:
-            getattr(active_connections[id], target).update_setting(name, value)
+            getattr(active_connections.values()[id], target).update_setting(name, value)
         except SettingError as e:
             # TODO: customize the exception
             errors[target][name].append(e.args[0])
