@@ -1,3 +1,5 @@
+import csv
+import io
 import uuid
 
 import dicttoxml
@@ -63,6 +65,32 @@ class XMLFrontend(alhos_e_bugalhos.connections.Frontend):
         @self._app.get('/', response_class=PlainTextResponse)
         def dispatch():
             return dicttoxml.dicttoxml(get_data())
+
+        self._settings['URL'] = f'@HOST@/{self._id}'
+
+        alhos_e_bugalhos.app.mount(f'/{self._id}', self._app)
+
+    def unresgister(self):
+        # fastapi doesn't let us remove the mount so we replace it
+        alhos_e_bugalhos.app.mount(f'/{self._id}', fastapi.FastAPI())
+
+
+class CSVFrontend(alhos_e_bugalhos.connections.Frontend):
+    TYPE_NAME = 'CSV'
+    SETTINGS = {}
+
+    def register(self, get_data):
+        self._id = uuid.uuid4()
+        self._app = fastapi.FastAPI()
+
+        @self._app.get('/', response_class=PlainTextResponse)
+        def dispatch():
+            data = get_data()
+            xml_data = io.StringIO()
+            writer = csv.DictWriter(xml_data, fieldnames=data.keys())
+            writer.writeheader()
+            writer.writerow(data)
+            return xml_data.getvalue()
 
         self._settings['URL'] = f'@HOST@/{self._id}'
 
