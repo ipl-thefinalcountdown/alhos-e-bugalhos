@@ -63,8 +63,20 @@ Type = "GET"
 [example_rest_toml.output]
 type = "TOML"
 
+[example_csv_html]
+name = "CSV>HTML"
+
+[example_csv_html.input]
+type = "CSV"
+
+[example_csv_html.input.settings]
+Data = "John,Doe,120 jefferson st.,Riverside, NJ, 08075\r\nJack,McGinnis,220 hobo Av.,Phila, PA,09119\r\n\"John \"\"Da Man\"\"\",Repici,120 Jefferson St.,Riverside, NJ,08075\r\nStephen,Tyler,\"7452 Terrace \"\"At the Plaza\"\" road\",SomeTown,SD, 91234\r\n,Blankman,,SomeTown, SD, 00298\r\n\"Joan \"\"the bone\"\", Anne\",Jet,\"9th, at Terrace plc\",Desert City,CO,00123\r\n"
+
+[example_csv_html.output]
+type = "HTML"
+
 [example_toml_to_yaml]
-name = "YAML>TOML"
+name = "TOML>YAML"
 
 [example_toml_to_yaml.input]
 type = "TOML"

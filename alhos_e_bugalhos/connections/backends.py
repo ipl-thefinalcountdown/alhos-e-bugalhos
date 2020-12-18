@@ -53,13 +53,13 @@ class CSVBackend(alhos_e_bugalhos.connections.Backend):
             if not value:
                 raise alhos_e_bugalhos.connections.SettingError('Invalid Data')
             try:
-                csv.DictReader(io.StringIO(value))
+                dict(enumerate(csv.reader(io.StringIO(value))))
             except (ValueError, csv.Error):
                 raise alhos_e_bugalhos.connections.SettingError('Invalid Data')
             return value
 
     def get_data(self, params=None):
-        return dict(csv.DictReader(io.StringIO(self.settings['Data'])))
+        return dict(enumerate(csv.reader(io.StringIO(self.settings['Data']))))
 
 
 class JSONBackend(alhos_e_bugalhos.connections.Backend):
