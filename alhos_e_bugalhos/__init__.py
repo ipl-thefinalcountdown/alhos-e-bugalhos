@@ -209,7 +209,7 @@ async def add_form(request: fastapi.Request):  # noqa: C901
 
     # add connection
     if 'input' in providers and 'output' in providers and connection_name:
-        active_connections[uuid.uuid4()] = Connection(
+        active_connections[str(uuid.uuid4())] = Connection(
             connection_name,
             providers['input'],
             providers['output'],
