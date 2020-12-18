@@ -43,6 +43,17 @@ available_settings = {
     },
 }
 
+available_text_settings = {
+    'input': {
+        backend.TYPE_NAME: backend.TEXT_SETTINGS
+        for backend in Backend.__subclasses__()
+    },
+    'output': {
+        frontend.TYPE_NAME: frontend.TEXT_SETTINGS
+        for frontend in Frontend.__subclasses__()
+    },
+}
+
 available_providers = {
     'input': {
         backend.TYPE_NAME: backend
@@ -133,6 +144,7 @@ async def root(request: fastapi.Request):
         'request': request,
         'connections': active_connections.values(),
         'available_settings': available_settings,
+        'available_text_settings': available_text_settings,
     }
 
 
@@ -204,6 +216,7 @@ async def add_form(request: fastapi.Request):  # noqa: C901
         'request': request,
         'connections': active_connections.values(),
         'available_settings': available_settings,
+        'available_text_settings': available_text_settings,
         'validate': validate,
         'single_error': single_error,
         'errors': errors,

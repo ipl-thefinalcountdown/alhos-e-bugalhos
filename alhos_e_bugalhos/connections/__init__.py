@@ -30,6 +30,7 @@ class MultipleSettingError(ProviderError):
 class Provider(abc.ABC):
     TYPE_NAME: ClassVar[Optional[str]]
     SETTINGS: ClassVar[Optional[List[str]]] = None
+    TEXT_SETTINGS: ClassVar[Optional[List[str]]] = None
 
     def __init__(self, settings) -> None:
         if not self.TYPE_NAME:

@@ -37,6 +37,14 @@
     % for name in settings:
       <%
         id = '-'.join((target, provider, name))
+        invalid = validate and name in errors[target]
+
+        if validate:
+          valid_class = 'is-invalid' if invalid else 'is-valid'
+        else:
+          valid_class = ''
+
+        is_textbox = available_text_settings[target][provider] and name in available_text_settings[target][provider]
       %>
       <div class="row g-3 align-items-center">
         <div class="col-auto">
@@ -44,16 +52,22 @@
         </div>
         <div class="col-auto">
         % if validate:
-          % if name in errors[target]:
-            <input id="${id}" name="${id}" class="form-control is-invalid" value="${form[id] | h}">
+          % if is_textbox:
+            <textarea id="${id}" name="${id}" rows="6" class="form-control ${valid_class}">${form[id] | h}</textarea>
+          % else:
+            <input id="${id}" name="${id}" class="form-control ${valid_class}" value="${form[id] | h}">
+          % endif
+          % if invalid:
             <div class="invalid-feedback">
               ${errors[target][name] | h}
             </div>
-          % else:
-            <input id="${id}" name="${id}" class="form-control is-valid" value="${form[id] | h}">
           % endif
         % else:
-          <input id="${id}" name="${id}" class="form-control">
+          % if is_textbox:
+            <textarea id="${id}" name="${id}" rows="6" class="form-control"></textarea>
+          % else:
+            <input id="${id}" name="${id}" class="form-control">
+          % endif
         % endif
         </div>
       </div>
@@ -147,23 +161,30 @@
         <h5 class="card-title">Input</h5>
         <p class="card-text"><b>Type:</b> ${connection.input.TYPE_NAME | h}</p>
       % for name, value in connection.input.settings.items():
-        <!-- XXX: if the data is too long (XML for eg), put it in a modal and add replace the text with a button to open -->
-        <p class="card-text"><b>${name | h}:</b> ${value | h}</p>
+        % if connection.input.TEXT_SETTINGS and name in connection.input.TEXT_SETTINGS:
+          <textarea class="form-control" rows="5" readonly>${value | h}</textarea>
+        % else:
+          <p class="card-text"><b>${name | h}:</b> ${value | h}</p>
+        % endif
       % endfor
         <h5 class="card-title">Output</h5>
       <p class="card-text"><b>Type:</b> ${connection.output.TYPE_NAME | h}</p>
       % for name, value in connection.output.settings.items():
-      % if '@HOST@' in value:
-      <%
-        url = f'http://{request.url.hostname}'
-        if request.url.port != 80:
-          url += f':{request.url.port}'
-        value = value.replace('@HOST@', url)
-      %>
-        <p class="card-text"><b>${name | h}:</b> <a href="${value}">${value | h}</a></p>
-      % else:
-        <p class="card-text"><b>${name | h}:</b> ${value | h}</p>
-      % endif
+        % if '@HOST@' in value:
+        <%
+          url = f'http://{request.url.hostname}'
+          if request.url.port != 80:
+            url += f':{request.url.port}'
+          value = value.replace('@HOST@', url)
+        %>
+          <p class="card-text"><b>${name | h}:</b> <a href="${value}">${value | h}</a></p>
+        % else:
+          % if connection.output.TEXT_SETTINGS and name in connection.output.TEXT_SETTINGS:
+            <textarea class="form-control" rows="5" readonly>${value | h}</textarea>
+          % else:
+            <p class="card-text"><b>${name | h}:</b> ${value | h}</p>
+          % endif
+        % endif
       % endfor
       </div>
     </div>

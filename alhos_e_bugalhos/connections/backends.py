@@ -21,6 +21,9 @@ class XMLBackend(alhos_e_bugalhos.connections.Backend):
     SETTINGS = [
         'Data',
     ]
+    TEXT_SETTINGS = [
+        'Data',
+    ]
 
     def validate_setting(self, name: str, value: Any):
         if name == 'Data':
@@ -39,6 +42,9 @@ class XMLBackend(alhos_e_bugalhos.connections.Backend):
 class CSVBackend(alhos_e_bugalhos.connections.Backend):
     TYPE_NAME = 'CSV'
     SETTINGS = [
+        'Data',
+    ]
+    TEXT_SETTINGS = [
         'Data',
     ]
 
@@ -61,6 +67,9 @@ class JSONBackend(alhos_e_bugalhos.connections.Backend):
     SETTINGS = [
         'Data',
     ]
+    TEXT_SETTINGS = [
+        'Data',
+    ]
 
     def validate_setting(self, name: str, value: Any):
         if name == 'Data':
@@ -79,6 +88,9 @@ class YAMLBackend(alhos_e_bugalhos.connections.Backend):
     SETTINGS = [
         'Data',
     ]
+    TEXT_SETTINGS = [
+        'Data',
+    ]
 
     def validate_setting(self, name: str, value: Any):
         if name == 'Data':
@@ -95,6 +107,9 @@ class YAMLBackend(alhos_e_bugalhos.connections.Backend):
 class TOMLBackend(alhos_e_bugalhos.connections.Backend):
     TYPE_NAME = 'TOML'
     SETTINGS = [
+        'Data',
+    ]
+    TEXT_SETTINGS = [
         'Data',
     ]
 
