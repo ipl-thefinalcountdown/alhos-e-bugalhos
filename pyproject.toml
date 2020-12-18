@@ -17,6 +17,7 @@ requires = [
     'validators',
     'requests',
     'pyyaml',
+    'xmltodict',
 ]
 
 [tool.flit.metadata.requires-extra]
