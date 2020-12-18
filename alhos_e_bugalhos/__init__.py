@@ -15,9 +15,11 @@ import tomlkit
 
 from fastapi.responses import HTMLResponse
 
+# import to make sure they are in __subclasses__
+import alhos_e_bugalhos.connections.backends  # noqa: F401
+import alhos_e_bugalhos.connections.frontends  # noqa: F401
+
 from alhos_e_bugalhos.connections import Backend, Connection, Frontend, MultipleSettingError, SettingError
-from alhos_e_bugalhos.connections.backends import RESTJsonBackend, XMLBackend
-from alhos_e_bugalhos.connections.frontends import CSVFrontend, HTMLFrontend, RESTJsonFrontend, XMLFrontend, YAMLFrontend
 
 
 __version__ = '0.0.0b0'
@@ -52,62 +54,7 @@ available_providers = {
     },
 }
 
-active_connections = {
-    'example_xml_html': Connection(
-        'XML>HTML Example',
-        XMLBackend({
-            'Data': '''
-                <interface name="org.freedesktop.DBus.Properties">
-                    <method name="GetAll">
-                        <arg direction="in" type="s" name="interface_name" />
-                        <arg direction="out" type="a{sv}" />
-                    </method>
-                </interface>
-            ''',
-        }),
-        HTMLFrontend({}),
-    ),
-    'example_rest_html': Connection(
-        'REST>HTML Example',
-        RESTJsonBackend({
-            'URL': 'https://official-joke-api.appspot.com/jokes/programming/random',
-            'Type': 'GET',
-        }),
-        HTMLFrontend({}),
-    ),
-    'example_rest_xml': Connection(
-        'REST>XML',
-        RESTJsonBackend({
-            'URL': 'https://official-joke-api.appspot.com/jokes/programming/random',
-            'Type': 'GET',
-        }),
-        XMLFrontend({}),
-    ),
-    'example_rest_csv': Connection(
-        'REST>CSV',
-        RESTJsonBackend({
-            'URL': 'https://official-joke-api.appspot.com/jokes/programming/random',
-            'Type': 'GET',
-        }),
-        CSVFrontend({}),
-    ),
-    'example_rest_yaml': Connection(
-        'REST>YAML',
-        RESTJsonBackend({
-            'URL': 'https://official-joke-api.appspot.com/jokes/programming/random',
-            'Type': 'GET',
-        }),
-        YAMLFrontend({}),
-    ),
-    'examplerest_rest':  Connection(
-        'REST>REST Example',
-        RESTJsonBackend({
-            'URL': 'https://official-joke-api.appspot.com/jokes/programming/random',
-            'Type': 'GET',
-        }),
-        RESTJsonFrontend({}),
-    ),
-}
+active_connections = {}
 
 
 def load_settings():
