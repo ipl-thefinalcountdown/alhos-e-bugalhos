@@ -1,5 +1,9 @@
 <%inherit file="base.html"/>
 
+<%
+  import validators
+%>
+
 <%def name="add_form(target)">
   <div class="card">
     <div class="card-header">${target.capitalize() | h}</div>
@@ -166,18 +170,23 @@
           <textarea class="form-control" rows="5" readonly>${value | h}</textarea>
           <br/>
         % else:
-          <p class="card-text"><b>${name | h}:</b> ${value | h}</p>
+          % if validators.url(value):
+            <p class="card-text"><b>${name | h}:</b> <a href="${value}">${value | h}</a></p>
+          % else:
+            <p class="card-text"><b>${name | h}:</b> ${value | h}</p>
+          % endif
         % endif
       % endfor
         <h5 class="card-title">Output</h5>
       <p class="card-text"><b>Type:</b> ${connection.output.TYPE_NAME | h}</p>
       % for name, value in connection.output.settings.items():
-        % if '@HOST@' in value:
+        % if '@HOST@' in value or validators.url(value):
         <%
-          url = f'http://{request.url.hostname}'
-          if request.url.port != 80:
-            url += f':{request.url.port}'
-          value = value.replace('@HOST@', url)
+          if '@HOST@' in value:
+            url = f'http://{request.url.hostname}'
+            if request.url.port != 80:
+              url += f':{request.url.port}'
+            value = value.replace('@HOST@', url)
         %>
           <p class="card-text"><b>${name | h}:</b> <a href="${value}">${value | h}</a></p>
         % else:
