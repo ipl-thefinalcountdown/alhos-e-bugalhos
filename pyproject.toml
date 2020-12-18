@@ -21,6 +21,9 @@ requires = [
     'xmltodict',
     'dicttoxml',
     'toml',
+    'python-multipart',
+    'json2html',
+    'paho-mqtt',
 ]
 
 [tool.flit.metadata.requires-extra]
