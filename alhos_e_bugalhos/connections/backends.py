@@ -95,13 +95,13 @@ class YAMLBackend(alhos_e_bugalhos.connections.Backend):
     def validate_setting(self, name: str, value: Any):
         if name == 'Data':
             try:
-                dict(yaml.load(value))
+                dict(yaml.load(value, Loader=yaml.SafeLoader))
             except (TypeError, ValueError, yaml.YAMLError):
                 raise alhos_e_bugalhos.connections.SettingError('Invalid Data')
             return value
 
     def get_data(self, params=None):
-        return dict(yaml.load(self.settings['Data']))
+        return dict(yaml.load(self.settings['Data'], Loader=yaml.SafeLoader))
 
 
 class TOMLBackend(alhos_e_bugalhos.connections.Backend):
