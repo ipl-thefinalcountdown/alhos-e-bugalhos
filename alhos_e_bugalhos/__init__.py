@@ -15,7 +15,6 @@ from fastapi.responses import HTMLResponse
 
 from alhos_e_bugalhos.connections import Backend, Connection, Frontend, MultipleSettingError, SettingError
 from alhos_e_bugalhos.connections.backends import RESTJsonBackend, XMLBackend
-from alhos_e_bugalhos.connections.example import ExampleBackend, ExampleFrontend
 from alhos_e_bugalhos.connections.frontends import CSVFrontend, HTMLFrontend, RESTJsonFrontend, XMLFrontend, YAMLFrontend
 
 
@@ -99,32 +98,12 @@ active_connections = [
         YAMLFrontend({}),
     ),
     Connection(
-        '>REST Example',
-        ExampleBackend({
-            'Host': '0.0.0.0',
-            'Port': 8081,
+        'REST>REST Example',
+        RESTJsonBackend({
+            'URL': 'https://official-joke-api.appspot.com/jokes/programming/random',
+            'Type': 'GET',
         }),
         RESTJsonFrontend({}),
-    ),
-    Connection(
-        'Example 2',
-        ExampleBackend({
-            'Host': '0.0.0.0',
-            'Port': 8082,
-        }),
-        ExampleFrontend({
-            'URL': 'http://localhost/example2',
-        }),
-    ),
-    Connection(
-        'Example 3',
-        ExampleBackend({
-            'Host': '0.0.0.0',
-            'Port': 8083,
-        }),
-        ExampleFrontend({
-            'URL': 'http://localhost/example3',
-        }),
     ),
 ]
 
