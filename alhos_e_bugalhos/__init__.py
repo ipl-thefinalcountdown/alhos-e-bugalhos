@@ -13,7 +13,7 @@ import mako.lookup
 import mako.template
 import tomlkit
 
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 
 # import to make sure they are in __subclasses__
 import alhos_e_bugalhos.connections.backends  # noqa: F401
@@ -209,6 +209,13 @@ async def add_form(request: fastapi.Request):  # noqa: C901
         'errors': errors,
         'form': await request.form(),
     }
+
+
+@app.get('/delete/{id}', response_class=HTMLResponse)
+async def delete(id: int, request: fastapi.Request):
+    del active_connections[list(active_connections.keys())[id]]
+    save_settings()
+    return RedirectResponse(url='/')
 
 
 @app.get('/edit/{id}', response_class=HTMLResponse)
