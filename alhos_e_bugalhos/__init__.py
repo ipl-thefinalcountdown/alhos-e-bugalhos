@@ -8,6 +8,7 @@ import os.path
 import uuid
 
 import fastapi
+import fastapi.staticfiles
 import mako.exceptions
 import mako.lookup
 import mako.template
@@ -26,6 +27,10 @@ __version__ = '0.0.0b0'
 
 
 app = fastapi.FastAPI()
+
+img_directory = os.path.abspath(os.path.join(__file__, '..', '..', 'img'))
+
+app.mount('/img', fastapi.staticfiles.StaticFiles(directory=img_directory), name='img')
 
 templates = mako.lookup.TemplateLookup(directories=[
     os.path.join(os.path.dirname(__file__), 'templates')

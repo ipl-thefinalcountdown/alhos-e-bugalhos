@@ -12,6 +12,7 @@ classifiers = [
 description-file = 'README.md'
 requires = [
     'fastapi~=0.62.0',
+    'aiofiles',
     'mako~=1.1.0',
     'tomlkit',
     'validators',
