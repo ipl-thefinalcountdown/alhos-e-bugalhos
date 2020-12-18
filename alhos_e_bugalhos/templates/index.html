@@ -162,7 +162,9 @@
         <p class="card-text"><b>Type:</b> ${connection.input.TYPE_NAME | h}</p>
       % for name, value in connection.input.settings.items():
         % if connection.input.TEXT_SETTINGS and name in connection.input.TEXT_SETTINGS:
+          <p class="card-text"><b>${name | h}:</b></p>
           <textarea class="form-control" rows="5" readonly>${value | h}</textarea>
+          <br/>
         % else:
           <p class="card-text"><b>${name | h}:</b> ${value | h}</p>
         % endif
@@ -180,7 +182,9 @@
           <p class="card-text"><b>${name | h}:</b> <a href="${value}">${value | h}</a></p>
         % else:
           % if connection.output.TEXT_SETTINGS and name in connection.output.TEXT_SETTINGS:
+            <p class="card-text"><b>${name | h}:</b></p>
             <textarea class="form-control" rows="5" readonly>${value | h}</textarea>
+            <br/>
           % else:
             <p class="card-text"><b>${name | h}:</b> ${value | h}</p>
           % endif
