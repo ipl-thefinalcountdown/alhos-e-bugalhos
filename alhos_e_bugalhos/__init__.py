@@ -92,11 +92,11 @@ def save_settings():
         data[key]['name'] = connection.name
         data[key]['input'] = {
             'type': connection.input.TYPE_NAME,
-            'settings': connection.input.settings,
+            'settings': connection.input.settings.copy(),
         }
         data[key]['output'] = {
             'type': connection.output.TYPE_NAME,
-            'settings': connection.output.settings,
+            'settings': connection.output.settings.copy(),
         }
         # XXX skip generated settings
         for target in ('input', 'output'):
